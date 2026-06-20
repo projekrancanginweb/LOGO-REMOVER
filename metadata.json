@@ -1,0 +1,6 @@
+{
+  "name": "Gemini Watermark Remover",
+  "description": "A lossless watermark removal, simulation, and calibration playground for Gemini and SynthID-style digital watermarks.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
