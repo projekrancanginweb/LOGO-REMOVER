@@ -41,7 +41,7 @@ function openHandoffDb() {
     return new Promise((resolve, reject) => {
         const indexedDb = globalThis.indexedDB;
         if (!indexedDb) {
-            reject(new Error('Browser saat ini tidak mendukung penyimpanan berkas lokal, silakan buka halaman debugging tujuan secara langsung lalu pilih kembali berkas tersebut.'));
+            reject(new Error('Browser Anda saat ini tidak mendukung penyimpanan berkas sementara lokal, silakan buka halaman debugging tujuan secara langsung dan pilih kembali berkas.'));
             return;
         }
 
@@ -52,7 +52,7 @@ function openHandoffDb() {
                 db.createObjectStore(STORE_NAME, { keyPath: 'id' });
             }
         };
-        request.onerror = () => reject(request.error || new Error('Gagal membuka penyimpanan berkas lokal.'));
+        request.onerror = () => reject(request.error || new Error('Gagal membuka penyimpanan berkas sementara lokal.'));
         request.onsuccess = () => resolve(request.result);
     });
 }
@@ -77,8 +77,8 @@ export async function saveDebugFileHandoff(file, targetKind = getDebugFileKind(f
         const transaction = db.transaction(STORE_NAME, 'readwrite');
         transaction.objectStore(STORE_NAME).put(record);
         transaction.oncomplete = () => resolve();
-        transaction.onerror = () => reject(transaction.error || new Error('Gagal menyimpan berkas secara lokal.'));
-        transaction.onabort = () => reject(transaction.error || new Error('Penyimpanan berkas lokal dibatalkan.'));
+        transaction.onerror = () => reject(transaction.error || new Error('Penyimpanan berkas sementara lokal gagal.'));
+        transaction.onabort = () => reject(transaction.error || new Error('Penyimpanan berkas sementara lokal dibatalkan.'));
     }).finally(() => db.close());
     return record;
 }
@@ -99,10 +99,10 @@ export async function consumeDebugFileHandoff(expectedKind = null) {
                 store.delete(LATEST_KEY);
             }
         };
-        request.onerror = () => reject(request.error || new Error('Gagal membaca berkas simpanan lokal.'));
+        request.onerror = () => reject(request.error || new Error('Gagal membaca penyimpanan berkas sementara lokal.'));
         transaction.oncomplete = () => resolve();
-        transaction.onerror = () => reject(transaction.error || new Error('Gagal membaca berkas simpanan lokal.'));
-        transaction.onabort = () => reject(transaction.error || new Error('Pembacaan berkas simpanan lokal dibatalkan.'));
+        transaction.onerror = () => reject(transaction.error || new Error('Gagal membaca penyimpanan berkas sementara lokal.'));
+        transaction.onabort = () => reject(transaction.error || new Error('Pembacaan penyimpanan berkas sementara lokal dibatalkan.'));
     }).finally(() => db.close());
 
     return matchedRecord;
